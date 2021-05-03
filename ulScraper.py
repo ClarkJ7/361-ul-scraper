@@ -51,6 +51,11 @@ class ReturnWorld(Resource):
         return "Hello World"
 
 
+@app.route('/')
+def root():
+    return "This is the simple microservice"
+
+
 api.add_resource(ReturnIngredients, "/<string:URL>")
 
 
