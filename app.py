@@ -41,6 +41,9 @@ class ReturnIngredients(Resource):
 
         ingredients_list = ingredients_list.replace('\n', ',')
 
+        # Turn string into list
+        ingredients_list = ingredients_list.split(',')
+
         # return ingredient string
         return ingredients_list
 
