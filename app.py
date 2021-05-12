@@ -54,22 +54,27 @@ class ReturnUL(Resource):
 
             # Obtain ingredients UL
             soup = BeautifulSoup(page.content, 'html.parser')
-            body = soup.find("div", {"class": "mw-parser-output"})
-            ingredients = body.find_all("ul")
 
-            # Create string with all ingredients seperated by a comma
-            for row in ingredients:
-                ingredients_list = ""
-                if row.get_text():
-                    ingredients_list += row.get_text()
+            # Find Ingredients header on page
+            element = soup.find("span", {"class": "mw-headline", "id": "Ingredients"}).parent
 
-            ingredients_list = ingredients_list.replace('\n', ',')
+            ingredient_string = ""
 
-            # Turn string into list
-            ingredients_list = ingredients_list.split(',')
+            # Pull all <li> from Ingredient Section
+            while element.next_sibling.name != 'h2':
+                if element.name == 'ul':
+                    for li in element.find_all('li'):
+                        ingredient_string += li.get_text()
+                        ingredient_string += ";"
 
-            # return ingredient string
-            return ingredients_list
+                element = element.next_sibling
+
+            ingredient_string = ingredient_string.replace('\n', ';')
+
+            ingredient_list = ingredient_string.split(';')
+            ingredient_list.pop(-1)
+
+            return ingredient_list
 
 
 @app.route('/')
@@ -86,4 +91,4 @@ api.add_resource(ReturnUL, "/<string:URL>")
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
